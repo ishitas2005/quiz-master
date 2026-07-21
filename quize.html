@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Master</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <img src="https://cdn-icons-png.flaticon.com/512/189/189665.png" alt="Quiz Logo" class="me-2" style="width: 40px; height: 40px; border-radius: 50%;">
+      Quiz Master
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="quiz_selection.html">Quizzes</a></li>
+        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+        <li class="nav-item">
+          <button class="btn btn-warning ms-3" data-bs-toggle="modal" data-bs-target="#loginModal" id="loginLogoutButton">
+            <span id="loginLogoutText">Login</span>
+          </button>
+        </li>
+        <li class="nav-item">
+            <button class="btn btn-secondary ms-3" id="theme-toggle"><i class="fas fa-moon"></i></button>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Header with Carousel -->
+<header class="mt-5">
+  <div id="quizCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      <div class="carousel-item active" style="background-image: url('https://images.unsplash.com/photo-1517433456452-f9633a875f6f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); height: 80vh; background-size: cover; background-position: center;">
+        <div class="carousel-caption d-flex flex-column justify-content-center h-100" style="background-color: rgba(0,0,0,0.5);">
+          <h1 class="display-3 fw-bold">Unlock Your Knowledge</h1>
+          <p class="lead fs-4">A universe of quizzes awaits you. Are you ready for the challenge?</p>
+          <a href="#trialQuizSection" class="btn btn-primary btn-lg mt-3">Take a Trial Quiz!</a>
+        </div>
+      </div>
+      <div class="carousel-item" style="background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'); height: 80vh; background-size: cover; background-position: center;">
+        <div class="carousel-caption d-flex flex-column justify-content-center h-100" style="background-color: rgba(0,0,0,0.5);">
+          <h1 class="display-3 fw-bold">Become a Quiz Master</h1>
+          <p class="lead fs-4">Rise through the ranks and prove your expertise.</p>
+          <a href="quiz_selection.html" class="btn btn-primary btn-lg mt-3">Browse Quizzes</a>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#quizCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#quizCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">Next</span>
+    </button>
+  </div>
+</header>
+
+<!-- Trial Quiz Section -->
+<section id="trialQuizSection" class="container my-5 py-5" style="display: none;">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-lg border-0 mb-4">
+        <div class="card-body p-5">
+            <h2 class="text-center mb-4">General Knowledge Trial Quiz</h2>
+            <div id="trialQuizContent">
+                <!-- Trial questions will be loaded here -->
+            </div>
+            <div id="trialQuizNavigation" class="text-center mt-4">
+                <button class="btn btn-secondary me-2" onclick="prevTrialQuestion()" id="prevTrialQuestionBtn" style="display:none;">Previous</button>
+                <button class="btn btn-primary me-2" onclick="nextTrialQuestion()" id="nextTrialQuestionBtn">Next</button>
+                <button class="btn btn-success" onclick="submitTrialQuiz()" id="submitTrialQuizBtn" style="display:none;">Submit</button>
+            </div>
+            <div id="trialResultBox" class="mt-4 text-center fw-bold"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="container my-5 text-center">
+  <h2 class="mb-5">Why Choose Quiz Master?</h2>
+  <div class="row">
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+            <i class="fas fa-brain fa-3x text-primary mb-3"></i>
+          <h4 class="card-title">Diverse Categories</h4>
+          <p class="card-text">From science to history, test your knowledge on a wide range of topics.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+            <i class="fas fa-bolt fa-3x text-primary mb-3"></i>
+          <h4 class="card-title">Interactive Learning</h4>
+          <p class="card-text">Learn new things in a fun and engaging way.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4 mb-4">
+      <div class="card h-100">
+        <div class="card-body">
+            <i class="fas fa-trophy fa-3x text-primary mb-3"></i>
+          <h4 class="card-title">Track Your Progress</h4>
+          <p class="card-text">See your scores and aim for the top of the leaderboard.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- Login Modal -->
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Login to Quiz Master</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="loginForm">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+          </div>
+          <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+          <button type="submit" class="btn btn-primary w-100">Login</button>
+        </form>
+      </div>
+      <div class="modal-footer text-center">
+        <small class="text-muted">Don’t have an account? <a href="#">Register</a></small>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="text-center py-4">
+  <div class="container">
+    <p class="mb-0">&copy; 2025 Quiz Master | All Rights Reserved</p>
+    <div class="mt-2">
+        <a href="#" class="text-white me-3"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="text-white"><i class="fab fa-instagram"></i></a>
+    </div>
+  </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Custom JS -->
+<script src="assets/js/script.js"></script>
+<!-- Trial Quiz JS -->
+<script>
+let currentTrialQuestion = 0;
+let trialUserAnswers = [];
+const trialQuestions = [
+    { q: "What is the capital of France?", o: ["Berlin", "Madrid", "Paris", "Rome"], a: "Paris" },
+    { q: "Which planet is known as the Red Planet?", o: ["Earth", "Mars", "Jupiter", "Venus"], a: "Mars" },
+    { q: "What is the largest ocean on Earth?", o: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], a: "Pacific Ocean" },
+];
+
+function showTrialQuizOnLoad() {
+    if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+        document.getElementById('trialQuizSection').style.display = 'block';
+        loadTrialQuestion();
+    } else {
+        document.getElementById('trialQuizSection').style.display = 'none';
+    }
+}
+
+function loadTrialQuestion() {
+    const quizContent = document.getElementById('trialQuizContent');
+    quizContent.innerHTML = '';
+    const q = trialQuestions[currentTrialQuestion];
+    
+    let optionsHtml = '';
+    q.o.forEach(option => {
+        optionsHtml += `
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="trialQ" value="${option}" id="trialQ_${option}">
+                <label class="form-check-label" for="trialQ_${option}">${option}</label>
+            </div>
+        `;
+    });
+
+    quizContent.innerHTML = `<p>${currentTrialQuestion + 1}. ${q.q}</p>${optionsHtml}`;
+
+    if(trialUserAnswers[currentTrialQuestion]){
+        document.querySelector(`input[name="trialQ"][value="${trialUserAnswers[currentTrialQuestion]}"]`).checked = true;
+    }
+
+    updateTrialNavigationButtons();
+}
+
+function saveTrialAnswer() {
+    const selected = document.querySelector('input[name="trialQ"]:checked');
+    if (selected) {
+        trialUserAnswers[currentTrialQuestion] = selected.value;
+    }
+}
+
+function updateTrialNavigationButtons() {
+    document.getElementById('prevTrialQuestionBtn').style.display = currentTrialQuestion > 0 ? 'inline-block' : 'none';
+    document.getElementById('nextTrialQuestionBtn').style.display = currentTrialQuestion < trialQuestions.length - 1 ? 'inline-block' : 'none';
+    document.getElementById('submitTrialQuizBtn').style.display = currentTrialQuestion === trialQuestions.length - 1 ? 'inline-block' : 'none';
+}
+
+function nextTrialQuestion() {
+    saveTrialAnswer();
+    if (currentTrialQuestion < trialQuestions.length - 1) {
+        currentTrialQuestion++;
+        loadTrialQuestion();
+    }
+}
+
+function prevTrialQuestion() {
+    saveTrialAnswer();
+    if (currentTrialQuestion > 0) {
+        currentTrialQuestion--;
+        loadTrialQuestion();
+    }
+}
+
+function submitTrialQuiz() {
+    saveTrialAnswer();
+    let score = 0;
+    trialQuestions.forEach((q, index) => {
+        if (trialUserAnswers[index] === q.a) {
+            score++;
+        }
+    });
+    document.getElementById("trialResultBox").innerHTML = `<h4>Your Score: ${score} / ${trialQuestions.length}</h4>`;
+    document.getElementById('trialQuizNavigation').style.display = 'none';
+}
+
+document.addEventListener('DOMContentLoaded', showTrialQuizOnLoad);
+</script>
+
+</body>
+</html>

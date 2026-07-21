@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Master</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/quizzes.css">
+</head>
+
+<body onload="showQuiz();">
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center" href="quize.html">
+        <img src="https://cdn-icons-png.flaticon.com/512/189/189665.png" alt="Quiz Logo" class="me-2"
+          style="width: 40px; height: 40px; border-radius: 50%;">
+        Quiz Master
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" href="quize.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link active" href="quiz_selection.html">Quizzes</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item">
+            <button class="btn btn-warning ms-3" data-bs-toggle="modal" data-bs-target="#loginModal"
+              id="loginLogoutButton">
+              <span id="loginLogoutText">Login</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="btn btn-secondary ms-3" id="theme-toggle">Theme</button>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Quiz Section -->
+  <div id="quizSection" class="container my-5 pt-5">
+    <div class="card shadow-lg border-0">
+      <div class="card-body">
+        <h2 id="quizTitle" class="mb-4 text-center fw-bold"></h2>
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div id="quizContent">
+          <!-- Quizzes will be loaded here by JavaScript -->
+        </div>
+        <div id="quizNavigation" class="text-center mt-4">
+          <button class="btn btn-secondary me-2" onclick="prevQuestion()" id="prevQuestionBtn"
+            style="display:none;">Previous</button>
+          <button class="btn btn-primary me-2" onclick="nextQuestion()" id="nextQuestionBtn">Next</button>
+          <button class="btn btn-success" onclick="submitQuiz()" id="submitQuizBtn" style="display:none;">Submit
+            Quiz</button>
+          <a href="quiz_selection.html" class="btn btn-info ms-2">Back to Quiz Selection</a>
+        </div>
+        <div id="resultBox" class="mt-4 text-center fw-bold"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header bg-dark text-white">
+          <h5 class="modal-title" id="loginModalLabel">Login to Quiz Master</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="email" class="form-label">Email address</label>
+              <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+            </div>
+            <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-warning w-100">Login</button>
+          </form>
+        </div>
+        <div class="modal-footer text-center">
+          <small class="text-muted">Don’t have an account? <a href="#">Register</a></small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center">
+    <div class="container">
+      <p>&copy; 2025 Quiz Master | All Rights Reserved</p>
+    </div>
+  </footer>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Custom JS -->
+  <script src="assets/js/script.js"></script>
+  <!-- Quiz JavaScript -->
+  <script>
+    let currentQuizIndex = 0;
+    let currentQuestionIndex = 0;
+    let userAnswers = [];
+    let quizzes = [];
+
+    const quizData = [
+      {
+        title: "Web Development Basics",
+        questions: [
+          { q: "Which language runs in a web browser?", o: ["Java", "C", "Python", "JavaScript"], a: "JavaScript" },
+          { q: "What does CSS stand for?", o: ["Cascading Style Sheets", "Computer Style System", "Colorful Style Syntax", "Creative Sheet Style"], a: "Cascading Style Sheets" },
+          { q: "Which company developed JavaScript?", o: ["Microsoft", "Netscape", "Google", "Apple"], a: "Netscape" },
+          { q: "What does HTML stand for?", o: ["Hyper Text Markup Language", "Hyperlinks and Text Markup Language", "Home Tool Markup Language", "Hyperlinking Text Marketing Language"], a: "Hyper Text Markup Language" },
+          { q: "Which HTML tag is used to define an internal style sheet?", o: ["<css>", "<script>", "<style>", "<link>"], a: "<style>" }
+        ]
+      },
+      {
+        title: "General Knowledge",
+        questions: [
+          { q: "What is the capital of France?", o: ["Berlin", "Madrid", "Paris", "Rome"], a: "Paris" },
+          { q: "Which planet is known as the Red Planet?", o: ["Earth", "Mars", "Jupiter", "Venus"], a: "Mars" },
+          { q: "What is the largest ocean on Earth?", o: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], a: "Pacific Ocean" },
+          { q: "What is the powerhouse of the cell?", o: ["Nucleus", "Ribosome", "Mitochondria", "Golgi apparatus"], a: "Mitochondria" },
+          { q: "Who wrote 'Hamlet'?", o: ["Charles Dickens", "William Shakespeare", "Leo Tolstoy", "Mark Twain"], a: "William Shakespeare" }
+        ]
+      },
+      {
+        title: "Basic C Programming",
+        questions: [
+          { q: "C was developed by ______", o: ["Dennis Ritchie", "James Gosling", "Bjarne Stroustrup", "Guido van Rossum"], a: "Dennis Ritchie" },
+          { q: "Which symbol ends a statement?", o: ["!", ".", ";", ":"], a: ";" },
+          { q: "Which header file is used for printf?", o: ["math.h", "string.h", "stdio.h", "stdlib.h"], a: "stdio.h" },
+          { q: "Which is NOT a data type?", o: ["int", "float", "char", "real"], a: "real" },
+          { q: "Which operator assigns value?", o: ["=", "==", "+=", "->"], a: "=" },
+          { q: "What is an array?", o: ["Group of variables", "Group of same data type", "Loop", "Function"], a: "Group of same data type" },
+          { q: "Which loop checks condition first?", o: ["for", "while", "do-while", "switch"], a: "while" },
+          { q: "C is a ______ language.", o: ["High-level", "Low-level", "Middle-level", "Machine"], a: "Middle-level" },
+          { q: "Which keyword defines a function?", o: ["include", "define", "void", "func"], a: "void" },
+          { q: "Which operator is used for pointer?", o: ["&", "*", "%", "#"], a: "*" }
+        ]
+      },
+      {
+        title: "Basic Python Programming",
+        questions: [
+          { q: "Which keyword prints output in Python?", o: ["out()", "print()", "echo()", "display()"], a: "print()" },
+          { q: "Python is a ______ language.", o: ["High-level", "Low-level", "Machine", "Assembly"], a: "High-level" },
+          { q: "Which symbol starts a comment?", o: ["//", "#", "/* */", "--"], a: "#" },
+          { q: "Which data type is immutable?", o: ["List", "Tuple", "Dictionary", "Set"], a: "Tuple" },
+          { q: "What is the correct file extension?", o: [".py", ".python", ".pt", ".java"], a: ".py" },
+          { q: "Which function gets user input?", o: ["scan()", "read()", "input()", "get()"], a: "input()" },
+          { q: "Which operator is used for exponent?", o: ["^", "**", "//", "%%"], a: "**" },
+          { q: "Which creates a list?", o: ["()", "[]", "{}", "<>"], a: "[]" },
+          { q: "Which loop is used to iterate list?", o: ["for", "do", "switch", "case"], a: "for" },
+          { q: "Which library is used for math functions?", o: ["calc", "numbers", "math", "numeric"], a: "math" }
+        ]
+      },
+      {
+        title: "HTML Basics",
+        questions: [
+          { q: "HTML stands for ______", o: ["Hyper Text Markup Language", "High Text Markup Language", "Hyperlink Text Module Language", "None"], a: "Hyper Text Markup Language" },
+          { q: "Which tag is used for headings?", o: ["<p>", "<div>", "<h1> to <h6>", "<span>"], a: "<h1> to <h6>" },
+          { q: "Which tag inserts a line break?", o: ["<br>", "<hr>", "<lb>", "<break>"], a: "<br>" },
+          { q: "Which tag displays an image?", o: ["<img>", "<image>", "<pic>", "<src>"], a: "<img>" },
+          { q: "Anchor tag is used for ______", o: ["Images", "Links", "Videos", "Tables"], a: "Links" },
+          { q: "Which attribute sets image source?", o: ["href", "alt", "src", "link"], a: "src" },
+          { q: "Which tag makes a list?", o: ["<ul>/ <ol>", "<list>", "<li>", "<div>"], a: "<ul>/ <ol>" },
+          { q: "HTML is a ______ language.", o: ["Programming", "Markup", "Database", "Styling"], a: "Markup" },
+          { q: "Which tag creates a paragraph?", o: ["<para>", "<p>", "<text>", "<pg>"], a: "<p>" },
+          { q: "Which element contains metadata?", o: ["<body>", "<head>", "<title>", "<meta>"], a: "<head>" }
+        ]
+      },
+      {
+        title: "CSS Basics",
+        questions: [
+          { q: "CSS stands for ______", o: ["Cascading Style Sheets", "Creative Style System", "Computer Style Sheet", "Color Styling System"], a: "Cascading Style Sheets" },
+          { q: "Which property changes text color?", o: ["background-color", "text-color", "color", "font-color"], a: "color" },
+          { q: "Which symbol is used for classes in CSS?", o: [".", "#", "@", "$"], a: "." },
+          { q: "Which symbol is used for IDs in CSS?", o: ["@", "#", ".", "%"], a: "#" },
+          { q: "Which property sets the background?", o: ["bg", "background-color", "color", "back"], a: "background-color" },
+          { q: "Which property sets the font size?", o: ["font-size", "text-size", "size", "fs"], a: "font-size" },
+          { q: "Which unit is relative?", o: ["px", "cm", "em", "mm"], a: "em" },
+          { q: "Which property adds space inside the box?", o: ["margin", "padding", "border", "spacing"], a: "padding" },
+          { q: "Which makes text bold?", o: ["font-weight", "font-type", "bold", "text-weight"], a: "font-weight" },
+          { q: "Which property controls border?", o: ["border", "outline", "frame", "box"], a: "border" }
+        ]
+      },
+      {
+        title: "Computer Fundamentals",
+        questions: [
+          { q: "Which device is used for input?", o: ["Monitor", "Keyboard", "Printer", "Speaker"], a: "Keyboard" },
+          { q: "What does CPU stand for?", o: ["Central Processing Unit", "Computer Power Unit", "Central Program Unit", "Control Processing Unit"], a: "Central Processing Unit" },
+          { q: "Which of the following is NOT an input device?", o: ["Mouse", "Scanner", "Printer", "Keyboard"], a: "Printer" },
+          { q: "Which memory is permanent?", o: ["RAM", "ROM", "Cache", "Registers"], a: "ROM" },
+          { q: "1 Byte = ?", o: ["4 bits", "8 bits", "16 bits", "32 bits"], a: "8 bits" },
+          { q: "Which is the 'brain' of the computer?", o: ["Monitor", "CPU", "Mouse", "Keyboard"], a: "CPU" },
+          { q: "Which of the following stores data temporarily?", o: ["ROM", "Hard Disk", "RAM", "DVD"], a: "RAM" },
+          { q: "What type of device is a monitor?", o: ["Input", "Output", "Storage", "Processing"], a: "Output" },
+          { q: "Which port is used for connecting pendrives?", o: ["VGA", "HDMI", "USB", "Ethernet"], a: "USB" },
+          { q: "What is the full form of ALU?", o: ["Arithmetic Logic Unit", "Automatic Logic Unit", "Advanced Logical Utility", "Arithmetic Long Unit"], a: "Arithmetic Logic Unit" }
+        ]
+      },
+      {
+        title: "Java Basics",
+        questions: [
+          { q: "Which keyword is used to create an object in Java?", o: ["class", "new", "object", "create"], a: "new" },
+          { q: "Java is a ______ language.", o: ["Compiled", "Interpreted", "Both compiled and interpreted", "None"], a: "Both compiled and interpreted" },
+          { q: "Which method is the entry point of Java programs?", o: ["start()", "run()", "main()", "begin()"], a: "main()" },
+          { q: "Which symbol is used for single-line comments?", o: ["/* */", "//", "#", "<!-- -->"], a: "//" },
+          { q: "Which data type is used for decimal values?", o: ["int", "float", "char", "boolean"], a: "float" },
+          { q: "Which keyword is used to inherit a class?", o: ["extends", "inherits", "super", "this"], a: "extends" },
+          { q: "Which of these is NOT a Java datatype?", o: ["int", "float", "real", "char"], a: "real" },
+          { q: "Which OOP concept means 'one interface, many forms'?", o: ["Inheritance", "Abstraction", "Polymorphism", "Encapsulation"], a: "Polymorphism" },
+          { q: "Which company originally developed Java?", o: ["Google", "Sun Microsystems", "Microsoft", "IBM"], a: "Sun Microsystems" },
+          { q: "Which keyword is used to prevent inheritance?", o: ["final", "private", "static", "abstract"], a: "final" }
+        ]
+      },
+      {
+        title: "Database Management",
+        questions: [
+          { q: "What does SQL stand for?", o: ["Structured Query Language", "Simple Query Language", "Sequential Query Language", "Strong Query Language"], a: "Structured Query Language" },
+          { q: "Which command is used to delete a table?", o: ["DROP", "REMOVE", "DELETE", "ERASE"], a: "DROP" },
+          { q: "Which command retrieves data from a table?", o: ["SELECT", "FETCH", "PICK", "GET"], a: "SELECT" },
+          { q: "Which of the following is a primary key feature?", o: ["Allows duplicates", "Allows null", "Unique & Not Null", "None"], a: "Unique & Not Null" },
+          { q: "Which SQL command is used to insert data?", o: ["INSERT INTO", "ADD", "PUT", "UPDATE"], a: "INSERT INTO" },
+          { q: "Which of the following is a type of database model?", o: ["Hierarchical", "Pyramidal", "Square", "Tree"], a: "Hierarchical" },
+          { q: "What is used to uniquely identify a row?", o: ["Foreign Key", "Primary Key", "Index", "View"], a: "Primary Key" },
+          { q: "Which clause sorts the result?", o: ["SORT BY", "ORDER BY", "GROUP BY", "ARRANGE"], a: "ORDER BY" },
+          { q: "Which SQL function returns the total sum?", o: ["SUM()", "TOTAL()", "ADD()", "COUNT()"], a: "SUM()" },
+          { q: "Which of these is a relational database?", o: ["MongoDB", "MySQL", "Redis", "Neo4j"], a: "MySQL" }
+        ]
+      },
+      {
+        title: "Operating System",
+        questions: [
+          { q: "Which of the following is an operating system?", o: ["MS Word", "Windows", "Chrome", "PowerPoint"], a: "Windows" },
+          { q: "Linux is a ______ OS.", o: ["Closed-source", "Open-source", "Paid", "Mobile"], a: "Open-source" },
+          { q: "Which OS is used in mobile phones?", o: ["Windows", "Android", "MS DOS", "Ubuntu"], a: "Android" },
+          { q: "What is the kernel?", o: ["Hardware", "Core of OS", "Application", "Utility"], a: "Core of OS" },
+          { q: "Which OS uses CLI?", o: ["MS DOS", "Windows 10", "Android", "iOS"], a: "MS DOS" },
+          { q: "Which of the following is NOT an OS?", o: ["Unix", "Linux", "Oracle", "Windows"], a: "Oracle" },
+          { q: "What does GUI stand for?", o: ["Graphical User Interface", "General User Interaction", "Graphical Utility Input", "None"], a: "Graphical User Interface" },
+          { q: "Which OS is developed by Apple?", o: ["Windows", "Linux", "macOS", "Android"], a: "macOS" },
+          { q: "OS is a type of ______ software.", o: ["Application", "System", "Utility", "Programming"], a: "System" },
+          { q: "Which function is done by OS?", o: ["Managing Memory", "Cooking Food", "Creating Hardware", "Cleaning PC"], a: "Managing Memory" }
+        ]
+      },
+      {
+        title: "Networking Basics",
+        questions: [
+          { q: "What does LAN stand for?", o: ["Local Area Network", "Large Area Network", "Long Area Network", "Light Area Network"], a: "Local Area Network" },
+          { q: "Which device connects multiple networks?", o: ["Switch", "Router", "Hub", "Bridge"], a: "Router" },
+          { q: "Which protocol is used for web browsing?", o: ["FTP", "SMTP", "HTTP", "SNMP"], a: "HTTP" },
+          { q: "What does IP stand for?", o: ["Internet Provider", "Internet Protocol", "Internal Process", "Interconnect Program"], a: "Internet Protocol" },
+          { q: "Which device reduces network collisions?", o: ["Hub", "Switch", "Repeater", "Modem"], a: "Switch" },
+          { q: "Wi-Fi stands for ______", o: ["Wireless Fidelity", "Wide Fiber", "Wireless Finder", "Wireless File"], a: "Wireless Fidelity" },
+          { q: "Which is a wireless technology?", o: ["Ethernet", "Bluetooth", "Coaxial", "Fiber"], a: "Bluetooth" },
+          { q: "Which protocol sends emails?", o: ["SMTP", "HTTP", "FTP", "SNMP"], a: "SMTP" },
+          { q: "What is the speed unit of network?", o: ["Mbps", "kg", "Litre", "MHz"], a: "Mbps" },
+          { q: "What is the central device in star topology?", o: ["Hub/Switch", "Router", "Bridge", "Firewall"], a: "Hub/Switch" }
+        ]
+      },
+      {
+        title: "Aptitude & Reasoning",
+        questions: [
+          { q: "What is 25 × 4?", o: ["50", "75", "100", "125"], a: "100" },
+          { q: "Find the next number: 3, 6, 12, 24, __", o: ["36", "48", "50", "60"], a: "48" },
+          { q: "Square root of 144?", o: ["10", "11", "12", "14"], a: "12" },
+          { q: "Which number is odd?", o: ["22", "64", "81", "100"], a: "81" },
+          { q: "What is 20% of 200?", o: ["20", "30", "40", "50"], a: "40" },
+          { q: "If A=1, B=2, C=3, what is F?", o: ["4", "5", "6", "7"], a: "6" },
+          { q: "Which one is different?", o: ["Apple", "Banana", "Carrot", "Grapes"], a: "Carrot" },
+          { q: "Simplify: 15 + 18 - 7", o: ["20", "26", "30", "36"], a: "26" },
+          { q: "A clock has how many degrees?", o: ["180", "360", "120", "240"], a: "360" },
+          { q: "Which shape has 3 sides?", o: ["Square", "Circle", "Triangle", "Pentagon"], a: "Triangle" }
+        ]
+      },
+      {
+        title: "Cyber Security",
+        questions: [
+          { q: "What is phishing?", o: ["Fake emails to steal data", "Buying products", "Speeding Wi-Fi", "Hacking mobile towers"], a: "Fake emails to steal data" },
+          { q: "A strong password should contain ______", o: ["Only letters", "Letters + numbers + symbols", "Only numbers", "Only your name"], a: "Letters + numbers + symbols" },
+          { q: "What does VPN do?", o: ["Protects identity online", "Increases battery", "Blocks ads", "Deletes viruses"], a: "Protects identity online" },
+          { q: "Malware stands for ______", o: ["Male Software", "Malicious Software", "Management Software", "Machine Learning Software"], a: "Malicious Software" },
+          { q: "A firewall protects against ______", o: ["Hackers", "Sunlight", "Low battery", "Slow RAM"], a: "Hackers" },
+          { q: "What is ransomware?", o: ["Virus that locks files", "Free antivirus", "Wi-Fi booster", "Password manager"], a: "Virus that locks files" },
+          { q: "HTTPS is more secure because of ______", o: ["Encryption", "Bigger letters", "More ads", "Faster browsing"], a: "Encryption" },
+          { q: "Which is a secure authentication method?", o: ["2FA", "Only password", "No password", "Sharing password"], a: "2FA" },
+          { q: "What does cyberbullying involve?", o: ["Online harassment", "Coding", "Hardware damage", "Phone charging"], a: "Online harassment" },
+          { q: "Which is a password manager?", o: ["LastPass", "Facebook", "Notepad", "Gmail"], a: "LastPass" }
+        ]
+      },
+      {
+        title: "Artificial Intelligence",
+        questions: [
+          { q: "AI stands for ______", o: ["Automatic Input", "Artificial Intelligence", "Applied Internet", "Advanced Interface"], a: "Artificial Intelligence" },
+          { q: "Which is an example of AI?", o: ["Google Maps", "Notepad", "Calculator", "MS Paint"], a: "Google Maps" },
+          { q: "AI is mainly used for ______", o: ["Decision making", "Sleeping", "Cooking", "Charging"], a: "Decision making" },
+          { q: "Which language is popular for AI?", o: ["Python", "HTML", "CSS", "SQL"], a: "Python" },
+          { q: "Which is an AI assistant?", o: ["Siri", "Firefox", "Chrome", "Disk Cleanup"], a: "Siri" },
+          { q: "Machine Learning is a subset of ______", o: ["AI", "HTML", "Hacking", "Operating Systems"], a: "AI" },
+          { q: "Which AI model is used for conversation?", o: ["ChatGPT", "MS Word", "Excel", "WinRAR"], a: "ChatGPT" },
+          { q: "Robots are controlled using ______", o: ["AI programs", "Food", "CO2", "Water"], a: "AI programs" },
+          { q: "Face recognition uses ______", o: ["Neural networks", "Firewall", "Excel formulas", "SQL"], a: "Neural networks" },
+          { q: "AI is used in ______", o: ["Self-driving cars", "Chalkboards", "Paper books", "Keyboards"], a: "Self-driving cars" }
+        ]
+      },
+      {
+        title: "Sports",
+        questions: [
+          { q: "How many players are in a cricket team?", o: ["10", "11", "12", "9"], a: "11" },
+          { q: "Which country hosts Wimbledon?", o: ["USA", "UK", "France", "Australia"], a: "UK" },
+          { q: "Who is known as 'God of Cricket'?", o: ["Virat Kohli", "Sachin Tendulkar", "Dhoni", "Rohit Sharma"], a: "Sachin Tendulkar" },
+          { q: "Football is played with ______ players in a team.", o: ["9", "10", "11", "12"], a: "11" },
+          { q: "Olympics are held every ______ years.", o: ["2", "3", "4", "5"], a: "4" },
+          { q: "Which game uses a shuttlecock?", o: ["Tennis", "Badminton", "Squash", "Hockey"], a: "Badminton" },
+          { q: "Who is the fastest man on earth?", o: ["Bolt", "Messi", "Ronaldo", "Phelps"], a: "Bolt" },
+          { q: "Chess originates from ______", o: ["India", "China", "USA", "Egypt"], a: "India" },
+          { q: "Which sport uses a bat and ball?", o: ["Hockey", "Cricket", "Football", "Basketball"], a: "Cricket" },
+          { q: "What is FIFA associated with?", o: ["Cricket", "Football", "Tennis", "Hockey"], a: "Football" }
+        ]
+      },
+      
+      {
+        title: "Geography",
+        questions: [
+          { q: "Which is the largest continent?", o: ["Asia", "Africa", "Europe", "Australia"], a: "Asia" },
+          { q: "Which is the longest river?", o: ["Nile", "Amazon", "Ganga", "Yangtze"], a: "Nile" },
+          { q: "Earth has how many continents?", o: ["5", "6", "7", "8"], a: "7" },
+          { q: "Which is the largest ocean?", o: ["Pacific", "Atlantic", "Indian", "Arctic"], a: "Pacific" },
+          { q: "Mount Everest is located in ______", o: ["India", "Nepal", "China", "Pakistan"], a: "Nepal" },
+          { q: "Which planet is known as the Blue Planet?", o: ["Mars", "Earth", "Venus", "Jupiter"], a: "Earth" },
+          { q: "Sahara is a ______", o: ["Forest", "Desert", "River", "Mountain"], a: "Desert" },
+          { q: "The Ganga flows into ______", o: ["Bay of Bengal", "Arabian Sea", "Indian Ocean", "Pacific"], a: "Bay of Bengal" },
+          { q: "Which gas is most abundant in Earth's atmosphere?", o: ["Oxygen", "Nitrogen", "Carbon Dioxide", "Helium"], a: "Nitrogen" },
+          { q: "The largest country by area is ______", o: ["USA", "China", "Russia", "India"], a: "Russia" }
+        ]
+      },
+      {
+        title: "Science",
+        questions: [
+          { q: "Chemical symbol for water?", o: ["H2O", "CO2", "O2", "H2SO4"], a: "H2O" },
+          { q: "Speed of light is ______", o: ["150,000 km/s", "300,000 km/s", "450,000 km/s", "600,000 km/s"], a: "300,000 km/s" },
+          { q: "Which planet is closest to the Sun?", o: ["Venus", "Mercury", "Earth", "Mars"], a: "Mercury" },
+          { q: "Humans breathe in ______ gas.", o: ["CO2", "Oxygen", "Nitrogen", "Hydrogen"], a: "Oxygen" },
+          { q: "The powerhouse of the cell is ______", o: ["Nucleus", "Ribosome", "Mitochondria", "Chloroplast"], a: "Mitochondria" },
+          { q: "Water freezes at ______ °C.", o: ["0", "10", "50", "100"], a: "0" },
+          { q: "Which vitamin is from sunlight?", o: ["A", "B", "C", "D"], a: "D" },
+          { q: "The hardest natural substance is ______", o: ["Gold", "Iron", "Diamond", "Silver"], a: "Diamond" },
+          { q: "Blood is pumped by ______", o: ["Brain", "Heart", "Lungs", "Kidney"], a: "Heart" },
+          { q: "Earth revolves around ______", o: ["Moon", "Mars", "Sun", "Venus"], a: "Sun" }
+        ]
+      },
+      {
+        title: "History",
+        questions: [
+          {
+            q: "Who was the first President of the United States?",
+            o: ["George Washington", "Thomas Jefferson", "Abraham Lincoln", "John Adams"],
+            a: "George Washington"
+          },
+          {
+            q: "In which year did World War II end?",
+            o: ["1945", "1939", "1941", "1950"],
+            a: "1945"
+          }
+          // Add more questions here
+        ]
+      },
+
+    ];
+
+    function showQuiz() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const quizIndex = urlParams.get('quizIndex');
+
+      if (quizIndex !== null && quizData[parseInt(quizIndex)]) {
+        currentQuizIndex = parseInt(quizIndex);
+      } else {
+        currentQuizIndex = 0; // Default to the first quiz if no valid index is provided
+      }
+
+      const quiz = quizData[currentQuizIndex];
+      document.getElementById('quizTitle').innerText = quiz.title;
+
+      const quizContent = document.getElementById('quizContent');
+      quizContent.innerHTML = '';
+
+      quiz.questions.forEach((q, index) => {
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        if (index === 0) questionDiv.classList.add('active-question');
+
+        let optionsHtml = '';
+        q.o.forEach(option => {
+          optionsHtml += `
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="q${index}" value="${option}" id="q${index}_${option}">
+                    <label class="form-check-label" for="q${index}_${option}">${option}</label>
+                </div>
+            `;
+        });
+
+        questionDiv.innerHTML = `<p>${index + 1}. ${q.q}</p>${optionsHtml}`;
+        quizContent.appendChild(questionDiv);
+      });
+
+      userAnswers = Array(quiz.questions.length).fill(null);
+      updateProgressBar();
+      updateNavigationButtons();
+    }
+
+    function loadQuestion() {
+      const questions = document.querySelectorAll('.question');
+      questions.forEach((q, index) => {
+        q.classList.toggle('active-question', index === currentQuestionIndex);
+      });
+
+      // Restore selected answer if available
+      const selectedOption = userAnswers[currentQuestionIndex];
+      if (selectedOption) {
+        const radioInput = document.querySelector(`input[name="q${currentQuestionIndex}"][value="${selectedOption}"]`);
+        if (radioInput) {
+          radioInput.checked = true;
+        }
+      }
+      updateProgressBar();
+      updateNavigationButtons();
+    }
+
+    function saveAnswer() {
+      const selected = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+      if (selected) {
+        userAnswers[currentQuestionIndex] = selected.value;
+      }
+    }
+
+    function updateProgressBar() {
+      const totalQuestions = quizData[currentQuizIndex].questions.length;
+      const progress = ((currentQuestionIndex + 1) / totalQuestions) * 100;
+      document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+
+    function updateNavigationButtons() {
+      const totalQuestions = quizData[currentQuizIndex].questions.length;
+      document.getElementById('prevQuestionBtn').style.display = currentQuestionIndex > 0 ? 'inline-block' : 'none';
+      document.getElementById('nextQuestionBtn').style.display = currentQuestionIndex < totalQuestions - 1 ? 'inline-block' : 'none';
+      document.getElementById('submitQuizBtn').style.display = currentQuestionIndex === totalQuestions - 1 ? 'inline-block' : 'none';
+    }
+
+    function nextQuestion() {
+      saveAnswer();
+      const totalQuestions = quizData[currentQuizIndex].questions.length;
+      if (currentQuestionIndex < totalQuestions - 1) {
+        currentQuestionIndex++;
+        loadQuestion();
+      }
+    }
+
+    function prevQuestion() {
+      saveAnswer();
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        loadQuestion();
+      }
+    }
+
+    function submitQuiz() {
+      saveAnswer();
+      let score = 0;
+      const quiz = quizData[currentQuizIndex];
+
+      quiz.questions.forEach((q, index) => {
+        if (userAnswers[index] === q.a) {
+          score++;
+        }
+      });
+
+      const resultBox = document.getElementById('resultBox');
+      resultBox.innerHTML = `
+        <h4>Your Score: ${score} / ${quiz.questions.length}</h4>
+        <ul class="list-group mt-3">
+            ${quiz.questions.map((q, index) => `
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${q.q}
+                    <span class="badge bg-${userAnswers[index] === q.a ? 'success' : 'danger'}">${userAnswers[index] || 'Not Answered'}</span>
+                    ${userAnswers[index] !== q.a ? `<span class="badge bg-info">${q.a}</span>` : ''}
+                </li>
+            `).join('')}
+        </ul>
+    `;
+      document.getElementById('quizNavigation').style.display = 'none';
+    }
+
+  </script>
+
+</body>
+
+</html>

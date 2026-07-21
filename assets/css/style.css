@@ -1,0 +1,121 @@
+/* General Body Styles */
+:root {
+    --primary-color: #00A896;
+    --secondary-color: #02C39A;
+    --accent-color: #F0F3BD;
+    --light-bg: #f8f9fa;
+    --dark-bg: #05668D;
+    --text-color-light: #333;
+    --text-color-dark: #f8f9fa;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-color-light);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: var(--dark-bg);
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .navbar {
+    background-color: #014f69 !important;
+}
+
+body.dark-mode .card {
+    background-color: #025577;
+    border-color: #014f69;
+}
+
+body.dark-mode .list-group-item {
+    background-color: #025577;
+    border-color: #014f69;
+    color: var(--text-color-dark);
+}
+
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4, body.dark-mode h5, body.dark-mode p {
+    color: var(--text-color-dark);
+}
+
+body.dark-mode .form-check-label {
+    color: var(--text-color-dark);
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    background-color: var(--primary-color) !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border: none;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-2px);
+}
+
+.btn-warning {
+    background-color: var(--accent-color);
+    border: none;
+    color: var(--text-color-light);
+}
+
+.btn-secondary {
+    background-color: var(--secondary-color);
+    border: none;
+    color: var(--text-color-dark);
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: #fff;
+}
+
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+}
+
+.card-title {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+/* Footer */
+footer {
+    padding: 2rem 0;
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+/* Quiz options in dark mode */
+.dark-mode .form-check-label {
+    color: var(--text-color-dark) !important;
+}
+
+/* Gradient backgrounds */
+#quizSection {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+#trialQuizSection {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+}
